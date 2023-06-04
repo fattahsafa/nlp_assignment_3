@@ -129,7 +129,7 @@ def main():
         ################
         train_dataloader = trainer.get_eval_dataloader(eval_dataset=features_dict[task_name]["validation"])
         eval_dataloader = DataLoaderWithTaskname(task_name, train_dataloader)
-        print(eval_dataloader.data_loader.collate_fn)
+        #print(eval_dataloader.data_loader.collate_fn)
         ################
         
         preds_dict[task_name] = trainer.prediction_loop(
@@ -139,12 +139,33 @@ def main():
     
     # Calculate the predictions and labels to calculate the metrics
     #####################
-    preds_rte = np.argmax(preds_dict["rte"].predictions)
+    predictions = {}
+    labels = {}
+    for task_name, preds in preds_dict.items():
+        task_predictions = []
+        task_labels = []
+
+        for pred in preds.predictions:
+            task_predictions.extend(pred.tolist())
+
+        for label in preds.label_ids:
+            task_labels.extend(label.tolist())
+
+        predictions[task_name] = task_predictions
+        labels[task_name] = task_labels
+
+    '''preds_rte = np.argmax(preds_dict["rte"].predictions)
     labels_rte = preds_dict["rte"].label_ids
     preds_stsb = preds_dict["stsb"].predictions.flatten()
     labels_stsb = preds_dict["stsb"].label_ids
     preds_qa = np.argmax(preds_dict["commonsense_qa"].predictions)
-    labels_qa = preds_dict["commonsense_qa"].label_ids
+    labels_qa = preds_dict["commonsense_qa"].label_ids'''
+    preds_rte = predictions['rte']
+    labels_rte = labels['rte']
+    preds_stsb = predictions["stsb"]
+    labels_stsb = labels["stsb"]
+    preds_qa = predictions["commonsense_qa"]
+    labels_qa = labels["commonsense_qa"]
     #####################
     
     # Evalute RTE
