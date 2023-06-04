@@ -127,14 +127,13 @@ def main():
         
         # Create the corresponding eval dataloaders and evaluate using the builtin method 'prediction loop'
         ################
-        train_dataloader = trainer.get_eval_dataloader(eval_dataset=features_dict[task_name]["validation"])
-        eval_dataloader = DataLoaderWithTaskname(task_name, train_dataloader)
+        eval_dataloader = DataLoaderWithTaskname(task_name, trainer.get_eval_dataloader(eval_dataset=features_dict[task_name]["validation"]))
         #print(eval_dataloader.data_loader.collate_fn)
         ################
         
         preds_dict[task_name] = trainer.prediction_loop(
             eval_dataloader, 
-            description=f"Validation: {task_name}",
+            description=f"Validation: {task_name}"
         )
     
     # Calculate the predictions and labels to calculate the metrics
