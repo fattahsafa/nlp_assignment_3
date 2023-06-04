@@ -143,7 +143,7 @@ elif args.function == 'finetune':
                       lr_decay=True, warmup_tokens=512*20, final_tokens=200*len(pretrain_dataset)*block_size,
                       num_workers=4)
         
-    name_dataset = NameDataset(open(args.finetune_corpus_path, encoding='utf-8').read(), pretrain_dataset)
+    name_dataset = NameDataset(pretrain_dataset, open(args.finetune_corpus_path, encoding='utf-8').read())
     trainer_obj = Trainer(model, name_dataset, None, tconf)
     
     #return tconf, trainer_obj
