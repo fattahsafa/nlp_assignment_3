@@ -140,7 +140,7 @@ def main():
     #####################
     predictions = {}
     labels = {}
-    for task_name, preds in preds_dict.items():
+    '''for task_name, preds in preds_dict.items():
         task_predictions = []
         task_labels = []
 
@@ -151,14 +151,15 @@ def main():
             task_labels.extend(label.tolist())
 
         predictions[task_name] = task_predictions
-        labels[task_name] = task_labels
-
-    '''preds_rte = np.argmax(preds_dict["rte"].predictions)
+        labels[task_name] = task_labels'''
+    breakpoint()
+    preds_rte = np.argmax(preds_dict["rte"].predictions)
     labels_rte = preds_dict["rte"].label_ids
     preds_stsb = preds_dict["stsb"].predictions.flatten()
     labels_stsb = preds_dict["stsb"].label_ids
     preds_qa = np.argmax(preds_dict["commonsense_qa"].predictions)
-    labels_qa = preds_dict["commonsense_qa"].label_ids'''
+    labels_qa = preds_dict["commonsense_qa"].label_ids
+
     preds_rte = predictions['rte']
     labels_rte = labels['rte']
     preds_stsb = predictions["stsb"]
