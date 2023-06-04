@@ -56,7 +56,7 @@ pretrain_dataset = dataset.CharCorruptionDataset(text, block_size)
 # use them for both the vanilla and the perceiver models
 mconf = gptmodel.GPTConfig(pretrain_dataset.vocab_size, pretrain_dataset.block_size,
     n_layer=4, n_head=8, n_embd=256)
-model = gptmodel.GPT(mconf)
+model = gptmodel.GPT(mconf).to(device=device)
 
 """
 Don't change above here; write your code below
