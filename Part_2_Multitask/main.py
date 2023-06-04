@@ -139,21 +139,6 @@ def main():
     
     # Calculate the predictions and labels to calculate the metrics
     #####################
-    '''predictions = {}
-    labels = {}
-    for task_name, preds in preds_dict.items():
-        task_predictions = []
-        task_labels = []
-
-        for pred in preds.predictions:
-            task_predictions.extend(pred.tolist())
-
-        for label in preds.label_ids:
-            task_labels.extend(label.tolist())
-
-        predictions[task_name] = task_predictions
-        labels[task_name] = task_labels'''
-    breakpoint()
     preds_rte = np.argmax(preds_dict["rte"].predictions)
     labels_rte = preds_dict["rte"].label_ids
     preds_stsb = preds_dict["stsb"].predictions.flatten()
