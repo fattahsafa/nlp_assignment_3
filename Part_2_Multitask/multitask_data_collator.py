@@ -35,9 +35,11 @@ class NLPDataCollator:
             # For example "input_ids" should have a shape (Batch size, Num_choices, Max_length)
             # for commonsense qa dataset.
             ###############
-            for key, value in first.items():
-              if key != "labels" and value is not None and not isinstance(value, str):
-                  batch[key] = torch.stack([f[key] for f in features])
+            for feature_key, feature_value in first.items():
+                if feature_key == "labels" or feature_value is None or isinstance(feature_value, str):
+                    continue
+                batch[feature_key] = torch.stack([feature[feature_key] for feature in features])
+
             ###############
             return batch
         else:
