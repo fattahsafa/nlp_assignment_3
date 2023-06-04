@@ -127,8 +127,9 @@ def main():
         
         # Create the corresponding eval dataloaders and evaluate using the builtin method 'prediction loop'
         ################
-        eval_dataloader = DataLoaderWithTaskname(task_name, trainer.get_eval_dataloader(eval_dataset=features_dict[task_name]["validation"]))
-        #print(eval_dataloader.data_loader.collate_fn)
+        eval_dataset = features_dict[task_name]["validation"]
+        dataloader = trainer.get_eval_dataloader(eval_dataset=eval_dataset)
+        eval_dataloader = DataLoaderWithTaskname(task_name, dataloader)
         ################
         
         preds_dict[task_name] = trainer.prediction_loop(
@@ -138,9 +139,9 @@ def main():
     
     # Calculate the predictions and labels to calculate the metrics
     #####################
-    predictions = {}
+    '''predictions = {}
     labels = {}
-    '''for task_name, preds in preds_dict.items():
+    for task_name, preds in preds_dict.items():
         task_predictions = []
         task_labels = []
 
@@ -159,13 +160,6 @@ def main():
     labels_stsb = preds_dict["stsb"].label_ids
     preds_qa = np.argmax(preds_dict["commonsense_qa"].predictions)
     labels_qa = preds_dict["commonsense_qa"].label_ids
-
-    preds_rte = predictions['rte']
-    labels_rte = labels['rte']
-    preds_stsb = predictions["stsb"]
-    labels_stsb = labels["stsb"]
-    preds_qa = predictions["commonsense_qa"]
-    labels_qa = labels["commonsense_qa"]
     #####################
     
     # Evalute RTE
