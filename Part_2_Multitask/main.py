@@ -91,7 +91,7 @@ def main():
             features_dict[task_name][phase] = phase_dataset.map(
                 convert_func_dict[task_name],
                 batched=True,
-                load_from_cache_file=True,
+                load_from_cache_file=False,
             )
             features_dict[task_name][phase].set_format(
                 type="torch", 
@@ -127,8 +127,8 @@ def main():
         
         # Create the corresponding eval dataloaders and evaluate using the builtin method 'prediction loop'
         ################
-        eval_dataset = features_dict[task_name]["validation"]
-        dataloader = trainer.get_eval_dataloader(eval_dataset=eval_dataset)
+        validation_dataset = features_dict[task_name]["validation"]
+        dataloader = trainer.get_eval_dataloader(eval_dataset=validation_dataset)
         eval_dataloader = DataLoaderWithTaskname(task_name, dataloader)
         ################
         
@@ -137,6 +137,7 @@ def main():
             description=f"Validation: {task_name}",
             prediction_loss_only=False
         )
+        print(task_name, preds_dict[task_name].predictions)
     
     # Calculate the predictions and labels to calculate the metrics
     #####################
