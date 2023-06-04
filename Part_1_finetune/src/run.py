@@ -130,30 +130,35 @@ elif args.function == 'finetune':
      
     trainer_obj = None #Trainer object (see trainer.py for more details)
     tconf = None #TrainerConfig object (see trainer.py for more details)
+    if torch.cuda.is_available():
+            worker_count = 4
+    else:
+            worker_count = 0
+    
     if args.reading_params_path:
-
         # With pretraining.
-        model.load_state_dict(torch.load(args.reading_params_path, map_location=torch.device('cpu')))
+        model.load_state_dict(torch.load(args.reading_params_path))
         tconf = TrainerConfig(max_epochs=10, batch_size=256, learning_rate=args.finetune_lr,
                       lr_decay=True, warmup_tokens=512*20, final_tokens=200*len(pretrain_dataset)*block_size,
-                      num_workers=4)
-    else:
+                      num_workers=worker_count)
+        model.eval()
         
+    else:
         # Without pretraining.
         tconf = TrainerConfig(max_epochs=75, batch_size=256, learning_rate=args.finetune_lr,
                       lr_decay=True, warmup_tokens=512*20, final_tokens=200*len(pretrain_dataset)*block_size,
-                      num_workers=4)
+                      num_workers=worker_count)
         
     name_dataset = NameDataset(pretrain_dataset, open(args.finetune_corpus_path, encoding='utf-8').read())
-    trainer_obj = Trainer(model, name_dataset, None, tconf)
+    trainer = Trainer(model, name_dataset, None, tconf)
+    trainer.train()
     
-    #return tconf, trainer_obj
 elif args.function == 'evaluate':
     assert args.outputs_path is not None
     assert args.reading_params_path is not None
     assert args.eval_corpus_path is not None
     
-    model.load_state_dict(torch.load(args.reading_params_path, map_location=torch.device('cpu')))
+    model.load_state_dict(torch.load(args.reading_params_path))
     
     correct = 0
     total = 0
