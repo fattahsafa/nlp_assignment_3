@@ -56,6 +56,7 @@ pretrain_dataset = dataset.CharCorruptionDataset(text, block_size)
 # use them for both the vanilla and the perceiver models
 mconf = model.GPTConfig(pretrain_dataset.vocab_size, pretrain_dataset.block_size,
     n_layer=4, n_head=8, n_embd=256)
+model = model.GPT(mconf)
 
 """
 Don't change above here; write your code below
@@ -151,6 +152,7 @@ elif args.function == 'evaluate':
     assert args.outputs_path is not None
     assert args.reading_params_path is not None
     assert args.eval_corpus_path is not None
+    
     model.load_state_dict(torch.load(args.reading_params_path, map_location=torch.device('cpu')))
     
     correct = 0
