@@ -2,7 +2,7 @@ import random
 import torch
 from torch.utils.data import Dataset
 import argparse
-import numpy as np
+from random import randint, choice
 
 """
 The input-output pairs (x, y) of the NameDataset are of the following form:
@@ -167,7 +167,7 @@ class CharCorruptionDataset(Dataset):
         # returns the length of the dataset
         return len(self.data)
 
-    def __getitem__(self, idx):
+    '''def __getitem__(self, idx):
         # TODO [part e]: see spec above
         doc = self.data[idx]
         truncated_len = np.random.randint(4, int(self.block_size * 7 / 8 + 1))
@@ -185,7 +185,35 @@ class CharCorruptionDataset(Dataset):
         x = torch.tensor([self.stoi[c] for c in masked_content[:-1]], dtype=torch.long)
         y = torch.tensor([self.stoi[c] for c in masked_content[1:]], dtype=torch.long)
 
-        return x, y
+        return x, y'''
+    def __getitem__(self, idx: int):
+        document = self.data[idx]
+        
+        # Randomly truncate the document
+        trunc_length = randint(4, int(self.block_size*7/8))
+        document = document[:trunc_length]
+        
+        # Split document into three substrings
+        prefix_length = randint(0, len(document)-2)
+        masked_length = randint(1, len(document)-prefix_length-1)
+
+        prefix = document[:prefix_length]
+        masked_content = document[prefix_length:prefix_length+masked_length]
+        suffix = document[prefix_length+masked_length:]
+        
+        # Form the masked string
+        masked_string = prefix + self.MASK_CHAR + suffix + self.MASK_CHAR + masked_content
+        masked_string += self.PAD_CHAR * (self.block_size - len(masked_string))
+        
+        # Create input and output examples
+        input_example = masked_string[:-1]
+        output_example = masked_string[1:]
+        
+        # Convert to tensors
+        input_tensor = torch.LongTensor([self.stoi[c] for c in input_example])
+        output_tensor = torch.LongTensor([self.stoi[c] for c in output_example])
+        
+        return input_tensor, output_tensor
 
 """
 Code under here is strictly for your debugging purposes; feel free to modify
