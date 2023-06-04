@@ -133,9 +133,8 @@ def main():
         ################
         
         preds_dict[task_name] = trainer.prediction_loop(
-            dataloader = eval_dataloader, 
+            eval_dataloader, 
             description=f"Validation: {task_name}",
-            prediction_loss_only=False
         )
         print(task_name, preds_dict[task_name].predictions)
     
