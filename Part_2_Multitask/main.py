@@ -133,8 +133,9 @@ def main():
         ################
         
         preds_dict[task_name] = trainer.prediction_loop(
-            eval_dataloader, 
-            description=f"Validation: {task_name}"
+            dataloader = eval_dataloader, 
+            description=f"Validation: {task_name}",
+            prediction_loss_only=False
         )
     
     # Calculate the predictions and labels to calculate the metrics
