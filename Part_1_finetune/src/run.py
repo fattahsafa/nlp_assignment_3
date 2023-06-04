@@ -91,6 +91,7 @@ if args.function == 'pretrain':
                     lr_decay=True, warmup_tokens=512 * 20, final_token=200 * len(pretrain_dataset) * block_size,
                     num_workers=4, ckpt_path=args.writing_params_path, writer=writer)
     trainer_obj = Trainer(model, pretrain_dataset, None, tconf)
+    trainer_obj.train()
 
 elif args.function == 'finetune':
     assert args.writing_params_path is not None
