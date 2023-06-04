@@ -9,7 +9,7 @@ import argparse
 random.seed(0)
 
 import dataset
-import model
+import model as gptmodel
 import trainer
 import utils
 from trainer import TrainerConfig, Trainer
@@ -54,9 +54,9 @@ pretrain_dataset = dataset.CharCorruptionDataset(text, block_size)
 
 # We don't suggest you change these hyperparameters, as they're known to work.
 # use them for both the vanilla and the perceiver models
-mconf = model.GPTConfig(pretrain_dataset.vocab_size, pretrain_dataset.block_size,
+mconf = gptmodel.GPTConfig(pretrain_dataset.vocab_size, pretrain_dataset.block_size,
     n_layer=4, n_head=8, n_embd=256)
-model = model.GPT(mconf)
+model = gptmodel.GPT(mconf)
 
 """
 Don't change above here; write your code below
