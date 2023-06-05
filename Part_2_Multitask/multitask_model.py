@@ -44,7 +44,10 @@ class MultitaskModel(transformers.PreTrainedModel):
             elif model_class_name.startswith("Albert"):
                 encoder_name = "albert"
             
-            shared_encoder = getattr(model, encoder_name)
+            if shared_encoder is None:
+                shared_encoder = getattr(model, encoder_name)
+            else:
+                setattr(model, encoder_name, shared_encoder)
             taskmodels_dict[task_name] = model
         return cls(encoder=shared_encoder, taskmodels_dict=taskmodels_dict)
         ##########
